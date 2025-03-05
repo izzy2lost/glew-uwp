@@ -1,0 +1,29 @@
+name: Build GLEW UWP
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Build GLEW Release x64
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup MSBuild
+        uses: microsoft/setup-msbuild@v1
+
+      - name: Restore NuGet Packages
+        run: nuget restore build/vc22_uwp/glew.sln
+
+      - name: Build GLEW Solution
+        run: msbuild build/vc22_uwp/glew.sln /p:Configuration=Release /p:Platform=x64
+
+      - name: Upload Build Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: GLEW-Release-x64
+          path: |
+            build/vc22_uwp/x64/Release/
